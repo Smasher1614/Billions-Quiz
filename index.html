@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Billions Quiz</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .quiz-container {
+      background: rgba(255, 255, 255, 0.07);
+      border-radius: 20px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+      width: 500px;
+      padding: 30px;
+      backdrop-filter: blur(10px);
+      text-align: center;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    .quiz-container h2 {
+      font-size: 1.4rem;
+      margin-bottom: 25px;
+      color: #00f7ff;
+      text-shadow: 0 0 15px #00f7ff;
+    }
+
+    .option {
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      border-radius: 12px;
+      padding: 12px 18px;
+      margin: 10px 0;
+      font-size: 1rem;
+      width: 100%;
+      cursor: pointer;
+      transition: 0.3s ease;
+      color: #fff;
+    }
+
+    .option:hover:not([disabled]) {
+      background: linear-gradient(135deg, #00f7ff, #0072ff);
+      transform: scale(1.05);
+      box-shadow: 0 0 15px #00f7ff;
+    }
+
+    .option.correct {
+      background: linear-gradient(135deg, #38ef7d, #11998e);
+      box-shadow: 0 0 15px #38ef7d;
+    }
+
+    .option.wrong {
+      background: linear-gradient(135deg, #ff416c, #ff4b2b);
+      box-shadow: 0 0 15px #ff416c;
+    }
+
+    #next-btn {
+      margin-top: 20px;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      cursor: pointer;
+      background: linear-gradient(135deg, #00f7ff, #0072ff);
+      color: #fff;
+      display: none;
+      transition: 0.3s ease;
+    }
+
+    #next-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px #00f7ff;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <h2 id="question">Question text</h2>
+    <div id="options"></div>
+    <button id="next-btn">Next</button>
+  </div>
+
+  <script>
+    const quizData = [
+      {
+        question: "What is the core mission of Billions Network?",
+        options: [
+          "A. To build a social media platform for AI agents",
+          "B. To enable humans and AI to trust each other via identity verification",
+          "C. To create a new blockchain for payments",
+          "D. To launch a decentralized exchange"
+        ],
+        correct: 1
+      },
+      {
+        question: "What technology does Billions use to verify identity while preserving privacy?",
+        options: [
+          "A. Biometrics (iris scans, fingerprints)",
+          "B. Public / private key signature only",
+          "C. Zero-knowledge proofs",
+          "D. Multi-factor authentication (SMS + email)"
+        ],
+        correct: 2
+      },
+      {
+        question: "Billions’ first NFT drop is called “Billions Genesis.” On which blockchain is this launched?",
+        options: [
+          "A. Solana",
+          "B. Ethereum mainnet",
+          "C. Polygon",
+          "D. Binance Smart Chain"
+        ],
+        correct: 2
+      },
+      {
+        question: "Which of these was a notable funding milestone for Billions?",
+        options: [
+          "A. $5 million",
+          "B. $10 million",
+          "C. $30 million",
+          "D. $100 million"
+        ],
+        correct: 2
+      },
+      {
+        question: "What additional utility did holding a Billions Genesis NFT grant to holders?",
+        options: [
+          "A. Governance voting rights from Day 1",
+          "B. 1,500 points + special Discord role + airdrop eligibility",
+          "C. Free trading on all NFT marketplaces",
+          "D. Instant liquidity in the native token"
+        ],
+        correct: 1
+      }
+    ];
+
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const nextBtn = document.getElementById("next-btn");
+
+    let currentQuestion = 0;
+    let score = 0;
+
+    function loadQuestion() {
+      const q = quizData[currentQuestion];
+      questionEl.textContent = q.question;
+      optionsEl.innerHTML = "";
+
+      q.options.forEach((opt, index) => {
+        const button = document.createElement("button");
+        button.textContent = opt;
+        button.classList.add("option");
+        button.addEventListener("click", () => selectAnswer(index));
+        optionsEl.appendChild(button);
+      });
+
+      nextBtn.style.display = "none";
+    }
+
+    function selectAnswer(selected) {
+      const q = quizData[currentQuestion];
+      const buttons = optionsEl.querySelectorAll(".option");
+      buttons.forEach((btn, index) => {
+        btn.disabled = true;
+        if (index === q.correct) btn.classList.add("correct");
+        else if (index === selected) btn.classList.add("wrong");
+      });
+
+      if (selected === q.correct) score++;
+      nextBtn.style.display = "block";
+    }
+
+    function showScore() {
+      questionEl.textContent = `🎉 You scored ${score} out of ${quizData.length}!`;
+      optionsEl.innerHTML = "";
+      nextBtn.style.display = "none";
+    }
+
+    nextBtn.addEventListener("click", () => {
+      currentQuestion++;
+      if (currentQuestion < quizData.length) {
+        loadQuestion();
+      } else {
+        showScore();
+      }
+    });
+
+    loadQuestion();
+  </script>
+</body>
+</html>
